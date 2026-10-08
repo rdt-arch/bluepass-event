@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>〈진짜 좋은 구독은 블루패스가 있다〉 영상 공유 EVENT</title>
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --text: #111;
+    --btn1: #8a7dff;
+    --btn2: #4a5cff;
+    --toast: #222;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #14151a; --text: #f2f2f5; --toast: #eee; }
+  }
+  :root[data-theme="dark"] { --bg: #14151a; --text: #f2f2f5; --toast: #eee; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 28px; padding: 24px; text-align: center;
+  }
+  h1 { font-size: clamp(20px, 5vw, 30px); margin: 0; font-weight: 800; }
+  .tags { max-width: 560px; font-size: 14px; opacity: .65; line-height: 1.7; word-break: keep-all; }
+  button {
+    border: 0; cursor: pointer; color: #fff; font-size: 18px; font-weight: 700;
+    padding: 20px 44px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--btn1), var(--btn2));
+    box-shadow: 0 10px 24px rgba(74, 92, 255, .35);
+    transition: transform .15s;
+    font-family: inherit;
+  }
+  button:active { transform: scale(.96); }
+  #toast {
+    position: fixed; bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+    background: var(--toast); color: var(--bg);
+    padding: 12px 22px; border-radius: 999px; font-size: 15px;
+    opacity: 0; transition: opacity .25s; pointer-events: none;
+  }
+  #toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+  <h1>〈진짜 좋은 구독은 블루패스가 있다〉 영상 공유 EVENT</h1>
+  <div class="tags" id="preview"></div>
+  <button id="copyBtn">📋 이벤트 해시태그 복사하기</button>
+  <div id="toast">복사되었어요!</div>
+
+<script>
+  // ▼ 여기만 수정하면 돼요 (제목은 위 <h1>에서 수정)
+  const HASHTAGS = "#삼성AI신혼가전 #삼성AI구독 #혼수가전 #삼성AI구독이신혼을지킨다 #블루패스";
+
+  document.getElementById("preview").textContent = HASHTAGS;
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 1800);
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  document.getElementById("copyBtn").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(HASHTAGS);
+      showToast("복사되었어요! ✅");
+    } catch (e) {
+      showToast(fallbackCopy(HASHTAGS) ? "복사되었어요! ✅" : "복사에 실패했어요 😢");
+    }
+  });
+</script>
+</body>
+</html>
